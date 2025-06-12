@@ -10,6 +10,7 @@ import re
 def download_and_process(
     url: str = "https://asloterias.com.br/download-todos-resultados-mega-sena"
 ) -> str:
+    os.makedirs("database", exist_ok=True)
     logging.info(f"Acessando página de download: {url}")
     session = requests.Session()
     resp = session.get(url)
