@@ -42,6 +42,10 @@ def run_cli():
             nums = [int(x) for x in re.split(r'[\s,;]+', entrada) if x.isdigit()]
             if len(nums) != 6:
                 print("\033[1;91m✖ Informe exatamente 6 números.\033[0m")
+            elif any(n < 1 or n > 60 for n in nums):
+                print("\033[1;91m✖ Todos os números devem estar entre 1 e 60.\033[0m")
+            elif len(nums) != len(set(nums)):
+                print("\033[1;91m✖ Não repita números. Informe 6 valores distintos.\033[0m")
             else:
                 print('\n\033[1;92m🔍 Checando resultado…\033[0m')
                 validator.checar_resultado(path, nums)
