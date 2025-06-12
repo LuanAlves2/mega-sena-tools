@@ -9,7 +9,14 @@ from utils import (
 from downloader import download_and_process
 
 class MegaSenaAnalyzer:
-    def __init__(self, df_file="database/mega_sena_sorteios_passados.xlsx"):
+    """Analisa estatísticas históricas dos sorteios da Mega-Sena."""
+
+    def __init__(self, df_file: str = "database/mega_sena_sorteios_passados.xlsx"):
+        """Carrega os dados históricos e realiza a análise inicial.
+
+        Args:
+            df_file: Caminho para o arquivo Excel com os sorteios.
+        """
         if not os.path.exists(df_file):
             print("\033[1;93m⚠️ Banco de dados não encontrado. Baixando dados históricos...\033[0m")
             download_and_process()
@@ -22,6 +29,7 @@ class MegaSenaAnalyzer:
         self._analyze_historical_data()
 
     def _analyze_historical_data(self):
+        """Calcula estatísticas utilizadas na validação de apostas."""
         sums_hist = self.df_hist[self.draw_cols].sum(axis=1)
         
         self.pair_odd = Counter(even_odd_count(row) for _, row in self.df_hist[self.draw_cols].iterrows())

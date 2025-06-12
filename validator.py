@@ -10,10 +10,22 @@ from utils import (
 )
 
 class MegaSenaValidator:
+    """Realiza validações e geração de apostas para a Mega-Sena."""
+
     def __init__(self):
+        """Inicializa o validador com um ``MegaSenaAnalyzer``."""
+
         self.analyzer = MegaSenaAnalyzer()
 
     def aposta_valida(self, nums):
+        """Verifica se uma aposta atende aos critérios estatísticos.
+
+        Args:
+            nums: Lista de números apostados.
+
+        Returns:
+            ``True`` se a aposta for considerada válida.
+        """
         if len(set(nums)) != len(nums) or not all(1 <= n <= 60 for n in nums):
             return False
         k = len(nums)
@@ -39,6 +51,15 @@ class MegaSenaValidator:
         return True
 
     def gerar_apostas(self, n_apostas, dezenas):
+        """Gera apostas válidas aleatórias.
+
+        Args:
+            n_apostas: Quantidade de apostas a gerar.
+            dezenas: Número de dezenas por aposta.
+
+        Returns:
+            Lista de apostas geradas.
+        """
         import random
         apostas = []
         while len(apostas) < n_apostas:
@@ -48,6 +69,11 @@ class MegaSenaValidator:
         return apostas
 
     def validar_arquivo(self, path):
+        """Valida apostas contidas em um arquivo Excel.
+
+        Args:
+            path: Caminho para o arquivo de apostas.
+        """
         try:
             df = pd.read_excel(path)
         except FileNotFoundError:
@@ -64,6 +90,12 @@ class MegaSenaValidator:
             print(f"Linha {idx+1}: {nums} → {status}")
 
     def checar_resultado(self, path, resultado):
+        """Compara apostas com um resultado sorteado.
+
+        Args:
+            path: Caminho para o arquivo Excel de apostas.
+            resultado: Sequência com as seis dezenas sorteadas.
+        """
         try:
             df = pd.read_excel(path)
         except FileNotFoundError:
@@ -87,10 +119,20 @@ class MegaSenaValidator:
                 print(f"  Aposta{i:3d}: {a} → {ac} acertos")
 
     def salvar_apostas(self, apostas, n_apostas, dezenas):
+        """Salva as apostas geradas em planilha Excel.
+
+        Args:
+            apostas: Lista de apostas.
+            n_apostas: Quantidade de apostas.
+            dezenas: Quantidade de dezenas em cada aposta.
+
+        Returns:
+            Caminho do arquivo salvo.
+        """
         os.makedirs("sorteios", exist_ok=True)
         cols = [f"dezena{i+1}" for i in range(dezenas)]
         df_out = pd.DataFrame(apostas, columns=cols)
         hoje = datetime.now().strftime("%Y%m%d")
         fn = f"sorteios/Apostas_Geradas_{n_apostas}Apostas_{dezenas}Dezenas_{hoje}.xlsx"
         df_out.to_excel(fn, index=False)
-        return fn 
+        return fn

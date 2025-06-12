@@ -4,6 +4,8 @@ from validator import MegaSenaValidator
 from downloader import download_and_process
 
 def run_cli():
+    """Executa o menu interativo da aplicação."""
+
     validator = MegaSenaValidator()
     
     while True:
