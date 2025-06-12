@@ -1,7 +1,9 @@
 import logging
+import os
 from datetime import datetime
 
 def setup_logging():
+    os.makedirs("logs", exist_ok=True)
     log_filename = f"logs/mega_sena_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
     logging.basicConfig(
         filename=log_filename,
