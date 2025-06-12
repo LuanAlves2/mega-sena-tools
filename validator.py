@@ -46,7 +46,15 @@ class MegaSenaValidator:
         return apostas
 
     def validar_arquivo(self, path):
-        df = pd.read_excel(path)
+        try:
+            df = pd.read_excel(path)
+        except FileNotFoundError:
+            print("\033[1;91m✖ Arquivo não encontrado. Verifique o caminho informado.\033[0m")
+            return
+        except Exception:
+            print("\033[1;91m✖ Não foi possível ler o arquivo. Certifique-se de que é um Excel válido.\033[0m")
+            return
+
         cols = [c for c in df.columns if 'dezena' in c.lower()]
         for idx, row in df.iterrows():
             nums = [int(row[c]) for c in cols]
@@ -54,7 +62,15 @@ class MegaSenaValidator:
             print(f"Linha {idx+1}: {nums} → {status}")
 
     def checar_resultado(self, path, resultado):
-        df = pd.read_excel(path)
+        try:
+            df = pd.read_excel(path)
+        except FileNotFoundError:
+            print("\033[1;91m✖ Arquivo não encontrado. Verifique o caminho informado.\033[0m")
+            return
+        except Exception:
+            print("\033[1;91m✖ Não foi possível ler o arquivo. Certifique-se de que é um Excel válido.\033[0m")
+            return
+
         cols = [c for c in df.columns if 'dezena' in c.lower()]
         apostas = df[cols].values.tolist()
         res_set = set(resultado)
