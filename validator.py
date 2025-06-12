@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from collections import Counter
 from datetime import datetime
@@ -68,6 +69,7 @@ class MegaSenaValidator:
                 print(f"  Aposta{i:3d}: {a} → {ac} acertos")
 
     def salvar_apostas(self, apostas, n_apostas, dezenas):
+        os.makedirs("sorteios", exist_ok=True)
         cols = [f"dezena{i+1}" for i in range(dezenas)]
         df_out = pd.DataFrame(apostas, columns=cols)
         hoje = datetime.now().strftime("%Y%m%d")
