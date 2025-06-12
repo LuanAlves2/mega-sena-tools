@@ -14,6 +14,8 @@ class MegaSenaValidator:
         self.analyzer = MegaSenaAnalyzer()
 
     def aposta_valida(self, nums):
+        if len(set(nums)) != len(nums) or not all(1 <= n <= 60 for n in nums):
+            return False
         k = len(nums)
         if even_odd_count(nums) != (round(self.analyzer.frac_even*k), k-round(self.analyzer.frac_even*k)):
             return False
