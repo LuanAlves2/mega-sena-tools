@@ -16,6 +16,7 @@ class MegaSenaValidator:
         """Inicializa o validador com um ``MegaSenaAnalyzer``."""
 
         self.analyzer = MegaSenaAnalyzer()
+        self.pesos = self.analyzer.freq_dezenas
 
     def aposta_valida(self, nums):
         """Verifica se uma aposta atende aos critérios estatísticos.
@@ -66,6 +67,20 @@ class MegaSenaValidator:
             cand = random.sample(range(1,61), dezenas)
             if self.aposta_valida(cand):
                 apostas.append(sorted(cand))
+        return apostas
+
+    def gerar_apostas_pesos(self, n_apostas, dezenas):
+        """Gera apostas usando pesos históricos das dezenas."""
+        import random
+        apostas = []
+        numeros = list(range(1, 61))
+        while len(apostas) < n_apostas:
+            cand_set = set()
+            while len(cand_set) < dezenas:
+                cand_set.add(random.choices(numeros, weights=self.pesos, k=1)[0])
+            cand = sorted(cand_set)
+            if self.aposta_valida(cand):
+                apostas.append(cand)
         return apostas
 
     def validar_arquivo(self, path):
