@@ -8,8 +8,16 @@ import unidecode
 import re
 
 def download_and_process(
-    url: str = "https://asloterias.com.br/download-todos-resultados-mega-sena"
+    url: str = "https://asloterias.com.br/download-todos-resultados-mega-sena",
 ) -> str:
+    """Baixa e processa o histórico de sorteios.
+
+    Args:
+        url: Página de onde será feito o download.
+
+    Returns:
+        Caminho do arquivo Excel processado.
+    """
     os.makedirs("database", exist_ok=True)
     logging.info(f"Acessando página de download: {url}")
     session = requests.Session()
