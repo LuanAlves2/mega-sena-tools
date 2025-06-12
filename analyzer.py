@@ -27,6 +27,7 @@ class MegaSenaAnalyzer:
         self.primes = {n for n in range(1,61) if is_prime(n)}
         self.fibonacci = {1,2,3,5,8,13,21,34,55}
         self._analyze_historical_data()
+        self.freq_dezenas = self.freq_por_dezena()
 
     def _analyze_historical_data(self):
         """Calcula estatísticas utilizadas na validação de apostas."""
@@ -65,4 +66,11 @@ class MegaSenaAnalyzer:
         self.frac_mult3 = self.modo_mult3 / 6
         self.frac_fib = self.modo_fib / 6
         self.avg_sum_min = self.q1 / 6
-        self.avg_sum_max = self.q3 / 6 
+        self.avg_sum_max = self.q3 / 6
+
+    def freq_por_dezena(self):
+        """Calcula a frequência de cada dezena de 1 a 60."""
+        cont = Counter()
+        for col in self.draw_cols:
+            cont.update(self.df_hist[col])
+        return [cont.get(n, 0) for n in range(1, 61)]
