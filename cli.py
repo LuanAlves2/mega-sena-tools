@@ -1,78 +1,113 @@
 import re
 from utils import clear_screen, pause, le_int
 from validator import MegaSenaValidator
-from downloader import download_and_process
+from lotofacil_validator import LotofacilValidator
+from downloader import download_and_process, download_and_process_lotofacil
+from utils import get_last_concurso
 
-def run_cli():
-    """Executa o menu interativo da aplicação."""
+def run_cli(mega_concurso=None, loto_concurso=None):
+    """Executa o menu interativo da aplicação.
+
+    Args:
+        mega_concurso: último concurso disponível da Mega-Sena.
+        loto_concurso: último concurso disponível da Lotofácil.
+    """
 
     validator = MegaSenaValidator()
-    
+    lf_validator = LotofacilValidator()
+
+    def gerar_menu(nome, validador, min_dz, max_dz, res_len):
+        while True:
+            clear_screen()
+            print('\033[1;96m╔' + '═' * 46 + '╗\033[0m')
+            print('\033[1;96m║\033[1;95m' + f' {nome.upper()} '.center(46) + '\033[1;96m║\033[0m')
+            print('\033[1;96m╠' + '═' * 46 + '╣\033[0m')
+            print(f"\033[1;94m║ 1)\033[0m \033[1;97mGerar apostas".ljust(24) + '║')
+            print(f"\033[1;94m║ 2)\033[0m \033[1;97mGerar apostas com pesos".ljust(24) + '║')
+            print(f"\033[1;94m║ 3)\033[0m \033[1;97mChecar resultados".ljust(24) + '║')
+            print(f"\033[1;94m║ 0)\033[0m \033[1;91mVoltar".ljust(24) + '║')
+            print('\033[1;96m╚' + '═' * 46 + '╝\033[0m')
+
+            opc = input('\033[1;93mEscolha ▶ \033[0m').strip()
+
+            if opc == '1':
+                n = le_int("Quantas apostas? ", 1, 500)
+                d = le_int(f"Quantas dezenas por aposta ({min_dz}–{max_dz})? ", min_dz, max_dz)
+                print('\n\033[1;92m⏳ Gerando apostas…\033[0m')
+                aps = validador.gerar_apostas(n, d)
+                fn = validador.salvar_apostas(aps, n, d)
+                print(f"\033[1;92m✔ Salvo em: {fn}\033[0m")
+                pause()
+
+            elif opc == '2':
+                n = le_int("Quantas apostas? ", 1, 500)
+                d = le_int(f"Quantas dezenas por aposta ({min_dz}–{max_dz})? ", min_dz, max_dz)
+                print('\n\033[1;92m⏳ Gerando apostas com pesos…\033[0m')
+                aps = validador.gerar_apostas_pesos(n, d)
+                fn = validador.salvar_apostas(aps, n, d)
+                print(f"\033[1;92m✔ Salvo em: {fn}\033[0m")
+                pause()
+
+            elif opc == '3':
+                path = input("\033[1;93mCaminho do Excel ▶ \033[0m").strip()
+                entrada = input(f"\033[1;93mResultado ({res_len} números separados) ▶ \033[0m")
+                nums = [int(x) for x in re.split(r'[\s,;]+', entrada) if x.isdigit()]
+                if len(nums) != res_len:
+                    print(f"\033[1;91m✖ Informe exatamente {res_len} números.\033[0m")
+                elif any(n < 1 or n > (60 if res_len == 6 else 25) for n in nums):
+                    lim = 60 if res_len == 6 else 25
+                    print(f"\033[1;91m✖ Todos os números devem estar entre 1 e {lim}.\033[0m")
+                elif len(nums) != len(set(nums)):
+                    print("\033[1;91m✖ Não repita números.\033[0m")
+                else:
+                    print('\n\033[1;92m🔍 Checando resultado…\033[0m')
+                    validador.checar_resultado(path, nums)
+                pause()
+
+            elif opc == '0':
+                break
+            else:
+                print('\033[1;91m✖ Opção inválida.\033[0m')
+                pause()
+
     while True:
         clear_screen()
-        # Cabeçalho estilo "terminal sci-fi"
         print('\033[1;96m╔' + '═' * 46 + '╗\033[0m')
         print('\033[1;96m║\033[1;95m' + ' MEGA-SENA TOOLS V.2.0 '.center(46) + '\033[1;96m║\033[0m')
         print('\033[1;96m╠' + '═' * 46 + '╣\033[0m')
-        print(f"\033[1;94m║ 1)\033[0m \033[1;97mGerar apostas".ljust(24) + '║')
-        print(f"\033[1;94m║ 2)\033[0m \033[1;97mGerar apostas com pesos".ljust(24) + '║')
-        print(f"\033[1;94m║ 3)\033[0m \033[1;97mValidar apostas em Excel".ljust(24) + '║')
-        print(f"\033[1;94m║ 4)\033[0m \033[1;97mChecar resultado de apostas".ljust(24) + '║')
-        print(f"\033[1;94m║ 5)\033[0m \033[1;97mBaixar e processar resultados".ljust(24) + '║')
-        print(f"\033[1;94m║ 0)\033[0m \033[1;91mSair do programa".ljust(24) + '║')
-        print('\033[1;96m╚' + '═' * 46 + '╝\033[0m')
+        print('\033[1;92mJogos atualizados para os últimos concursos!\033[0m')
+        if mega_concurso:
+            print(f'Mega-sena: Concurso {mega_concurso}')
+        else:
+            print('Mega-sena: ?')
+        if loto_concurso:
+            print(f'Lotofácil: Concurso {loto_concurso}')
+        else:
+            print('Lotofácil: ?')
+        print('\nSelecione o jogo:')
+        print(' 1) Mega Sena')
+        print(' 2) Lotofácil')
+        print(' 3) Atualizar banco de dados')
+        print(' 0) Sair')
 
         opc = input('\033[1;93mEscolha ▶ \033[0m').strip()
-        
+
         if opc == '1':
-            n = le_int("Quantas apostas? ", 1, 500)
-            d = le_int("Quantas dezenas por aposta (6–20)? ", 6, 20)
-            print('\n\033[1;92m⏳ Gerando apostas…\033[0m')
-            aps = validator.gerar_apostas(n, d)
-            fn = validator.salvar_apostas(aps, n, d)
-            print(f"\033[1;92m✔ Salvo em: {fn}\033[0m")
-            pause()
-
+            gerar_menu('Mega-Sena', validator, 6, 20, 6)
         elif opc == '2':
-            n = le_int("Quantas apostas? ", 1, 500)
-            d = le_int("Quantas dezenas por aposta (6–20)? ", 6, 20)
-            print('\n\033[1;92m⏳ Gerando apostas com pesos…\033[0m')
-            aps = validator.gerar_apostas_pesos(n, d)
-            fn = validator.salvar_apostas(aps, n, d)
-            print(f"\033[1;92m✔ Salvo em: {fn}\033[0m")
-            pause()
-
+            gerar_menu('Lotofácil', lf_validator, 15, 20, 15)
         elif opc == '3':
-            path = input("\033[1;93mCaminho do Excel ▶ \033[0m").strip()
-            print('\n\033[1;92m🔍 Validando arquivo…\033[0m')
-            validator.validar_arquivo(path)
+            print('\n\033[1;92m🌐 Atualizando base de dados…\033[0m')
+            m_path = download_and_process()
+            l_path = download_and_process_lotofacil()
+            mega_concurso = get_last_concurso(m_path)
+            loto_concurso = get_last_concurso(l_path)
+            print('\033[1;92m✔ Bases atualizadas.\033[0m')
             pause()
-
-        elif opc == '4':
-            path = input("\033[1;93mCaminho do Excel ▶ \033[0m").strip()
-            entrada = input("\033[1;93mResultado (6 números separados) ▶ \033[0m")
-            nums = [int(x) for x in re.split(r'[\s,;]+', entrada) if x.isdigit()]
-            if len(nums) != 6:
-                print("\033[1;91m✖ Informe exatamente 6 números.\033[0m")
-            elif any(n < 1 or n > 60 for n in nums):
-                print("\033[1;91m✖ Todos os números devem estar entre 1 e 60.\033[0m")
-            elif len(nums) != len(set(nums)):
-                print("\033[1;91m✖ Não repita números. Informe 6 valores distintos.\033[0m")
-            else:
-                print('\n\033[1;92m🔍 Checando resultado…\033[0m')
-                validator.checar_resultado(path, nums)
-            pause()
-
-        elif opc == '5':
-            print('\n\033[1;92m🌐 Baixando e processando…\033[0m')
-            download_and_process()
-            pause()
-
         elif opc == '0':
             print('\n\033[1;91m🔒 Encerrando Mega-Sena Tools. Até a próxima!\033[0m')
             import sys
             sys.exit(0)
-
         else:
             print('\033[1;91m✖ Opção inválida.\033[0m')
-            pause() 
+            pause()
