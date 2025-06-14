@@ -17,6 +17,7 @@ def run_cli(mega_concurso=None, loto_concurso=None):
     lf_validator = LotofacilValidator()
 
     def gerar_menu(nome, validador, min_dz, max_dz, res_len):
+
         width = 46
         while True:
             clear_screen()
@@ -28,6 +29,7 @@ def run_cli(mega_concurso=None, loto_concurso=None):
             print(f"\033[1;94m║ 3)\033[0m \033[1;97mChecar resultados".ljust(width) + '\033[1;96m║\033[0m')
             print(f"\033[1;94m║ 0)\033[0m \033[1;91mVoltar".ljust(width) + '\033[1;96m║\033[0m')
             print('\033[1;96m╚' + '═' * width + '╝\033[0m')
+
 
             opc = input('\033[1;93mEscolha ▶ \033[0m').strip()
 
@@ -71,12 +73,14 @@ def run_cli(mega_concurso=None, loto_concurso=None):
                 print('\033[1;91m✖ Opção inválida.\033[0m')
                 pause()
 
+
     width = 46
     while True:
         clear_screen()
         print('\033[1;96m╔' + '═' * width + '╗\033[0m')
         print('\033[1;96m║\033[1;95m' + '✦ MEGA-SENA TOOLS V.2.0 ✦'.center(width) + '\033[1;96m║\033[0m')
         print('\033[1;96m╟' + '─' * width + '╢\033[0m')
+
         print('\033[1;92mJogos atualizados para os últimos concursos!\033[0m')
         if mega_concurso:
             print(f'Mega-sena: Concurso {mega_concurso}')
