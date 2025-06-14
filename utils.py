@@ -51,6 +51,11 @@ def count_leq_30(nums):
 
     return sum(1 for x in nums if x <= 30)
 
+def count_leq_12(nums):
+    """Conta valores menores ou iguais a 12."""
+
+    return sum(1 for x in nums if x <= 12)
+
 def count_mult_3(nums):
     """Conta quantos números são múltiplos de 3."""
 
@@ -75,6 +80,14 @@ def diff_max_min(nums):
     """Diferença entre o maior e o menor número da lista."""
 
     return max(nums) - min(nums)
+
+def quadrant_count(nums):
+    """Conta números nos intervalos 1-10, 11-20 e 21-25."""
+
+    q1 = sum(1 for x in nums if 1 <= x <= 10)
+    q2 = sum(1 for x in nums if 11 <= x <= 20)
+    q3 = sum(1 for x in nums if 21 <= x <= 25)
+    return q1, q2, q3
 
 def modo_dict(d):
     """Retorna a chave com maior frequência em ``d``."""
@@ -103,3 +116,16 @@ def le_int(msg, mn, mx):
         except ValueError:
             pass
         print(f'\033[1;91m✖ Digite um inteiro entre {mn} e {mx}.\033[0m')
+
+
+def get_last_concurso(path):
+    """Obtém o último número de concurso do arquivo Excel informado."""
+
+    import pandas as pd
+    try:
+        df = pd.read_excel(path)
+        if 'concurso' in df.columns:
+            return int(df['concurso'].max())
+    except Exception as e:
+        logging.error(f"Erro ao ler {path}: {e}")
+    return None
