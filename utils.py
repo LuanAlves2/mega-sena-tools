@@ -56,6 +56,11 @@ def count_leq_12(nums):
 
     return sum(1 for x in nums if x <= 12)
 
+def count_leq_40(nums):
+    """Conta valores menores ou iguais a 40."""
+
+    return sum(1 for x in nums if x <= 40)
+
 def count_mult_3(nums):
     """Conta quantos números são múltiplos de 3."""
 
