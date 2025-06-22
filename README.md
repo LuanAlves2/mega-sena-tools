@@ -10,7 +10,7 @@
 
 ## 📋 Descrição
 
-Ferramenta avançada para análise e geração de apostas da Mega-Sena, utilizando padrões históricos e estatísticas para otimizar suas chances de ganho. O sistema analisa mais de 2.000 sorteios para identificar padrões e gerar apostas mais inteligentes.
+Ferramenta avançada para análise e geração de apostas da Mega-Sena, Lotofácil e Quina, utilizando padrões históricos e estatísticas para otimizar suas chances de ganho. O sistema analisa milhares de sorteios para identificar padrões e gerar apostas mais inteligentes.
 
 ## 🗂️ Estrutura de Diretórios
 
@@ -23,8 +23,12 @@ Ferramenta avançada para análise e geração de apostas da Mega-Sena, utilizan
  ┣ 📜 cli.py        # Interface do usuário
  ┣ 📜 utils.py      # Funções auxiliares
  ┣ 📜 downloader.py # Download de dados
- ┣ 📜 analyzer.py   # Análise estatística
- ┗ 📜 validator.py  # Validação de apostas
+ ┣ 📜 analyzer.py   # Análise Mega-Sena
+ ┣ 📜 lotofacil_analyzer.py # Análise Lotofácil
+ ┣ 📜 quina_analyzer.py     # Análise Quina
+ ┣ 📜 validator.py  # Validação Mega-Sena
+ ┣ 📜 lotofacil_validator.py # Validação Lotofácil
+ ┗ 📜 quina_validator.py     # Validação Quina
 ```
 
 ## 🚀 Instalação
@@ -51,7 +55,7 @@ python main.py
 
 1. **🎯 Gerar Apostas**
    - Gera apostas baseadas em padrões históricos
-   - Suporta de 6 a 20 dezenas por aposta
+   - Suporta apostas com quantidade de dezenas variável conforme o jogo
    - Validação automática de padrões
 
 2. **🔍 Validar Apostas**
@@ -75,8 +79,8 @@ python main.py
 - **`cli.py`**: Interface de linha de comando interativa
 - **`utils.py`**: Funções auxiliares e utilitários
 - **`downloader.py`**: Download e processamento de dados
-- **`analyzer.py`**: Análise de padrões históricos
-- **`validator.py`**: Validação e geração de apostas
+- **`analyzer.py`**, **`lotofacil_analyzer.py`**, **`quina_analyzer.py`**: análises dos jogos
+- **`validator.py`**, **`lotofacil_validator.py`**, **`quina_validator.py`**: validação e geração de apostas
 
 ## 📦 Requisitos
 
